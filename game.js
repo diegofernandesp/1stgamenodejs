@@ -54,21 +54,19 @@ function createGame() {
         const player = state.players[command.playerId];
         if (moveFunction){
             moveFunction(player)
-            detectColision();
+            detectColision(command.playerId);
         }
         
     };
 
-    function detectColision() {
+    function detectColision(playerId) {
         for (fruitId in state.fruits) {
             fruit = state.fruits[fruitId]
-            for (playerId in state.players) {
-                player = state.players[playerId]
-                if (player.x == fruit.x && player.y == fruit.y) {
-                    /*Houve colisão entre um jogador e uma fruta - Um jogador comeu uma fruta*/
-                    delete state.fruits[fruitId];
-                    player.score += 1;
-                }
+            player = state.players[playerId]
+            if (player.x == fruit.x && player.y == fruit.y) {
+                console.log("Houve colisão entre um jogador e uma fruta - Um jogador comeu uma fruta");
+                delete state.fruits[fruitId];
+                player.score += 1;
             }
         }
     }
