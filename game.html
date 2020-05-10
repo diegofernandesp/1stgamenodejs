@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        #canvas {
+            border:10px solid #CCC;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            width: 500px;
+            height: 500px;
+        }
+        #score {
+            image-rendering: optimizeSpeed;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <p><em>Game Board</em></p>
+                <p><strong>N</strong> New Game</p>
+                <canvas width="10" height="10" id="canvas"></canvas>
+            </div>
+            <div class="col-sm">
+                <p><em>Score</em></p>
+                <canvas width="max" height="300" id="score"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="game.js"></script>
+</body>
+
+</html>
