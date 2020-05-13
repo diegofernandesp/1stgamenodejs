@@ -7,7 +7,7 @@
     <title>Canvas</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <style>
-        #canvas {
+        #screen {
             border:10px solid #CCC;
             image-rendering: pixelated;
             image-rendering: crisp-edges;
@@ -27,7 +27,7 @@
             <div class="col-sm">
                 <p><em>Game Board</em></p>
                 <p><strong>N</strong> New Game</p>
-                <canvas width="10" height="10" id="canvas"></canvas>
+                <canvas width="10" height="10" id="screen"></canvas>
             </div>
             <div class="col-sm">
                 <p><em>Score</em></p>
@@ -36,8 +36,23 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="./js/keydownlistener.js"></script>
-    <script type="text/javascript" src="./js/game.js"></script>
+    <script type="module">
+        import createKeyDownListener from "./js/keydownlistener.js"
+        import createGame from "./js/gamecreation.js"
+        import renderScreen from "./js/renderscreen.js"
+
+        const screen = document.getElementById("screen");
+        const scoreCanvas = document.getElementById("score");        
+
+        const game = createGame(); 
+        const keyDownListener = createKeyDownListener();
+        keyDownListener.subscribe(game.movePlayer);
+        
+        renderScreen(screen, score, game, requestAnimationFrame);
+
+        /*Player for test*/
+        game.addPlayer({playerId:"player1", w: 1, h: 1, x: 6, y: 4, score: 0})
+    </script>
 </body>
 
 </html>

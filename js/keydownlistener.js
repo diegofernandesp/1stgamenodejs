@@ -1,4 +1,4 @@
-function createKeyDownListener(){
+export default function createKeyDownListener(){
     const state = {
         observers: []
     }

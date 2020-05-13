@@ -1,14 +1,11 @@
-var canvas = document.getElementById("canvas");
-var cnvCtx = canvas.getContext("2d");
-
-var scoreCanvas = document.getElementById("score");
-var scoreCtx = scoreCanvas.getContext("2d");
-scoreCtx.font = "15px consolas";
-
-function createGame() {
+export default function createGame() {
     const state = {
         fruits: {},
-        players: {}
+        players: {},
+        screen: {
+            width: 10,
+            height: 10
+        }
     };
 
     function addPlayer(command){
@@ -32,7 +29,7 @@ function createGame() {
                 e.y -= 1;
         },
         ArrowDown: function (e) {
-            if (e.y < canvas.height - 1)
+            if (e.y < state.screen.height - 1)
                 e.y += 1;
         },
         ArrowLeft: function (e) {
@@ -40,7 +37,7 @@ function createGame() {
                 e.x -= 1;
         },
         ArrowRight: function (e) {
-            if (e.x < canvas.width - 1)
+            if (e.x < state.screen.width - 1)
                 e.x += 1;
         },
         n: function () {
@@ -60,9 +57,9 @@ function createGame() {
     };
 
     function detectColision(playerId) {
-        for (fruitId in state.fruits) {
-            fruit = state.fruits[fruitId]
-            player = state.players[playerId]
+        for (const fruitId in state.fruits) {
+            let fruit = state.fruits[fruitId]
+            let player = state.players[playerId]
             if (player.x == fruit.x && player.y == fruit.y) {
                 console.log("Houve colisão entre um jogador e uma fruta - Um jogador comeu uma fruta");
                 delete state.fruits[fruitId];
@@ -91,13 +88,13 @@ function createGame() {
             h: 1
         };
     
-        game.state.fruits[newFruitName()] = newFruit;
+        state.fruits[newFruitName()] = newFruit;
     };
 
     /*função que define de quanto em quanto tempo as frutas vão ser geradas na tela*/
     setInterval(function () {
         addRandomFruit()
-    }, 3245);
+    }, 2855);
 
     return {
         movePlayer,
@@ -105,33 +102,4 @@ function createGame() {
         addPlayer,
         removePlayer
     }
-}
-
-const game = createGame(); 
-const keyDownListener = createKeyDownListener();
-keyDownListener.subscribe(game.movePlayer);
-
-renderScreen();
-
-function renderScreen() {
-    cnvCtx.clearRect(0, 0, canvas.width, canvas.height);
-    scoreCtx.clearRect(0, 0, scoreCanvas.width, scoreCanvas.height);
-
-    /*Iteração nos jogadores*/
-    y = 30
-    for (playerId in game.state.players) {
-        player = game.state.players[playerId];
-        cnvCtx.fillStyle = "#1a0500";
-        cnvCtx.fillRect(player.x, player.y, player.w, player.h);
-        scoreCtx.fillText(player.playerId + " = " + player.score, 1, y);
-        y += 18;
-    };
-
-    /*Iteração nas frutas*/
-    for (fruitId in game.state.fruits) {
-        fruit = game.state.fruits[fruitId];
-        cnvCtx.fillStyle = "#ff3300";
-        cnvCtx.fillRect(fruit.x, fruit.y, fruit.w, fruit.h);
-    };
-    requestAnimationFrame(renderScreen);
 }
