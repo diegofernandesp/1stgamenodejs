@@ -1,4 +1,4 @@
-export default function renderScreen(screen, score, game, requestAnimationFrame) {
+export default function renderScreen(screen, score, game, requestAnimationFrame, pplayerId) {
     var cnvCtx = screen.getContext("2d");
     cnvCtx.clearRect(0, 0, screen.width, screen.height);
     var scoreCtx = score.getContext("2d");
@@ -9,7 +9,7 @@ export default function renderScreen(screen, score, game, requestAnimationFrame)
     var y = 30
     for (const playerId in game.state.players) {
         let player = game.state.players[playerId];
-        cnvCtx.fillStyle = "#1a0500";
+        cnvCtx.fillStyle = pplayerId == player.playerId ? "#FFAE33" : "#1a0500";
         cnvCtx.fillRect(player.x, player.y, player.w, player.h);
         scoreCtx.fillText(player.playerId + " = " + player.score, 1, y);
         y += 18;
@@ -22,6 +22,6 @@ export default function renderScreen(screen, score, game, requestAnimationFrame)
         cnvCtx.fillRect(fruit.x, fruit.y, fruit.w, fruit.h);
     };
     requestAnimationFrame(() => {
-        renderScreen(screen, score, game, requestAnimationFrame)
+        renderScreen(screen, score, game, requestAnimationFrame, pplayerId)
     });
 }

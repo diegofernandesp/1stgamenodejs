@@ -1,17 +1,26 @@
 export default function createKeyDownListener(){
     const state = {
-        observers: []
+        observers: [],
+        playerId: null
     }
 
     function subscribe(observerFunction){
         state.observers.push(observerFunction);
     }
 
+    function unsubscribeAll(){
+        state.observers = [];
+    }
+
     function notifyAll(command){
         console.log("notifying "+state.observers.length+" observers");
         for (const observerFunction of state.observers){
-            observerFunction(command)
+            observerFunction(command);
         }
+    }
+
+    function registerPlayerId(playerId){
+        state.playerId = playerId;
     }
 
     window.addEventListener("keydown", keyDownHandler);
@@ -20,7 +29,8 @@ export default function createKeyDownListener(){
         var keyPressed = e.key;
     
         const command = {
-            playerId: "player1",
+            type: "move-player",
+            playerId: state.playerId,
             keyPressed
         }
     
@@ -28,6 +38,8 @@ export default function createKeyDownListener(){
     }
 
     return{
-        subscribe
+        subscribe,
+        registerPlayerId,
+        unsubscribeAll
     }
 }

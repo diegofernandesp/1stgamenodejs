@@ -19,6 +19,7 @@
             image-rendering: optimizeSpeed;
         }
     </style>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
@@ -46,13 +47,50 @@
 
         const game = createGame(); 
         const keyDownListener = createKeyDownListener();
-        keyDownListener.subscribe(game.movePlayer);
         
-        renderScreen(screen, score, game, requestAnimationFrame);
+        const socket = io();
+        
+        socket.on('connect', () => {
+            const playerId = socket.id;
+            renderScreen(screen, score, game, requestAnimationFrame, playerId);
+            console.log("My player Id: " + playerId);
+        });
+        
+        
+        socket.on('setup', (state) => {
+            const playerId = socket.id;
+            game.setState(state);
 
-        /*Player for test*/
-        game.addPlayer({playerId:"player1", w: 1, h: 1, x: 6, y: 4, score: 0})
-        game.addPlayer({playerId:"player2", w: 1, h: 1, x: 6, y: 4, score: 0})
+            keyDownListener.registerPlayerId(playerId);
+            keyDownListener.unsubscribeAll();
+            keyDownListener.subscribe(game.movePlayer);
+            keyDownListener.subscribe((command) => {
+                socket.emit(command.type, command)
+            });
+            console.log(state);
+        });
+
+        socket.on('add-player', (command) => {
+            game.addPlayer(command);
+            console.log("adding another player " + command.playerId);
+        });
+
+        socket.on('remove-player', (command) => {
+            game.removePlayer(command);
+            console.log("removing another player " + command.playerId);
+        });
+
+        socket.on('move-player', (command) => {
+            const playerId = socket.id;
+            if (playerId !== command.playerId){
+                game.movePlayer(command);
+            }
+        });
+
+        socket.on('add-fruit', (command) => {
+            game.addFruit(command);
+        })
+        
     </script>
 </body>
 

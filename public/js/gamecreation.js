@@ -8,6 +8,28 @@ export default function createGame() {
         }
     };
 
+    const observers = [];
+
+    function start(){
+        const frequency = 2622;
+        setInterval(addFruit, frequency);
+    }
+
+    function subscribe(observerFunction){
+        observers.push(observerFunction);
+    }
+
+    function notifyAll(command){
+        console.log("notifying "+observers.length+" observers");
+        for (const observerFunction of observers){
+            observerFunction(command);
+        }
+    }
+
+    function setState(newState){
+        Object.assign(state, newState);
+    }
+
     function addPlayer(command){
         state.players[command.playerId] = {
             playerId: command.playerId,
@@ -17,10 +39,25 @@ export default function createGame() {
             h: command.h,
             score: command.score
         }
+
+        notifyAll({
+            type: 'add-player',
+            playerId: command.playerId,
+            x: command.x,
+            y: command.y,
+            w: command.w,
+            h: command.h,
+            score: command.score
+        })
     }
 
     function removePlayer(command){
-        delete state.players[command.playerId]
+        delete state.players[command.playerId];
+
+        notifyAll({
+            type: 'remove-player',
+            playerId: command.playerId
+        });
     }
 
     var handleMovement = {
@@ -46,7 +83,7 @@ export default function createGame() {
     };    
 
     function movePlayer(command) {
-        console.log("moving " + command.playerId + " with " + command.keyPressed);
+        notifyAll(command);
         const moveFunction = handleMovement[command.keyPressed];
         const player = state.players[command.playerId];
         if (moveFunction){
@@ -68,7 +105,7 @@ export default function createGame() {
         }
     }
 
-    function addRandomFruit() {
+    function addFruit(command) {
         /* Gera uma string aleatória para ser usada como propriedade para o objeto frutas */
         var newFruitName = function () {
             var length = 30;
@@ -80,26 +117,34 @@ export default function createGame() {
             }
             return result;
         };
+
+        const fruitId = newFruitName();
     
         var newFruit = {
-            x: Math.floor(Math.random() * 10),
-            y: Math.floor(Math.random() * 10),
+            fruitId: fruitId,
+            x: command ? command.x : Math.floor(Math.random() * 10),
+            y: command ? command.y : Math.floor(Math.random() * 10),
             w: 1,
             h: 1
         };
-    
-        state.fruits[newFruitName()] = newFruit;
-    };
+        state.fruits[fruitId] = newFruit;
 
-    /*função que define de quanto em quanto tempo as frutas vão ser geradas na tela*/
-    setInterval(function () {
-        addRandomFruit()
-    }, 2855);
+        notifyAll({
+            type: "add-fruit",
+            fruitId: fruitId,
+            x: newFruit.x,
+            y: newFruit.y
+        })
+    };
 
     return {
         movePlayer,
         state,
         addPlayer,
-        removePlayer
+        addFruit,
+        removePlayer,
+        setState,
+        subscribe,
+        start
     }
 }
