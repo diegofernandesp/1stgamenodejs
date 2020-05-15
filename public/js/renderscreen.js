@@ -1,18 +1,31 @@
-export default function renderScreen(screen, score, game, requestAnimationFrame, pplayerId) {
+export default function renderScreen(screen, game, requestAnimationFrame, pplayerId) {
     var cnvCtx = screen.getContext("2d");
     cnvCtx.clearRect(0, 0, screen.width, screen.height);
-    var scoreCtx = score.getContext("2d");
-    scoreCtx.clearRect(0, 0, score.width, score.height);
-    scoreCtx.font = "15px consolas";
+
+    const printScoreElement = (player, list) => {                                    
+
+        var item = document.createElement("li");
+        item.setAttribute("class", "list-group-item d-flex justify-content-between align-items-center");
+        item.appendChild(document.createTextNode(player.playerId));
+        list.appendChild(item);
+        
+        var score = document.createElement("span");
+        score.setAttribute("class", "badge badge-primary badge-pill")
+        score.appendChild(document.createTextNode(player.score));
+        item.append(score);
+    };
+
+    const list = document.getElementById("game-score");
+    while (list.firstChild) {
+        list.removeChild(list.firstChild);
+    }
 
     /*Iteração nos jogadores*/
-    var y = 30
     for (const playerId in game.state.players) {
         let player = game.state.players[playerId];
         cnvCtx.fillStyle = pplayerId == player.playerId ? "#FFAE33" : "#1a0500";
         cnvCtx.fillRect(player.x, player.y, player.w, player.h);
-        scoreCtx.fillText(player.playerId + " = " + player.score, 1, y);
-        y += 18;
+        printScoreElement(player, list);
     };
 
     /*Iteração nas frutas*/
@@ -22,6 +35,6 @@ export default function renderScreen(screen, score, game, requestAnimationFrame,
         cnvCtx.fillRect(fruit.x, fruit.y, fruit.w, fruit.h);
     };
     requestAnimationFrame(() => {
-        renderScreen(screen, score, game, requestAnimationFrame, pplayerId)
-    });
+        renderScreen(screen, game, requestAnimationFrame, pplayerId)
+    });     
 }

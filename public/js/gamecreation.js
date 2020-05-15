@@ -60,7 +60,7 @@ export default function createGame() {
         });
     }
 
-    var handleMovement = {
+    var handleMovement = {        
         ArrowUp: function (e) {
             if (e.y > 0)
                 e.y -= 1;
@@ -77,8 +77,9 @@ export default function createGame() {
             if (e.x < state.screen.width - 1)
                 e.x += 1;
         },
-        n: function () {
-            game.state.fruits = {};
+        n: function (e) {
+            console.log("chegou aqui");
+            state.fruits = {};
         }
     };    
 

@@ -22,17 +22,22 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 
-<body>
+<body style="background-color: rgb(231, 235, 217);">
     <div class="container">
         <div class="row">
             <div class="col-sm">
                 <p><em>Game Board</em></p>
-                <p><strong>N</strong> New Game</p>
                 <canvas width="10" height="10" id="screen"></canvas>
             </div>
             <div class="col-sm">
-                <p><em>Score</em></p>
-                <canvas width="max" height="300" id="score"></canvas>
+                <div class="jumbotron jumbotron-fluid">
+                    <div class="container">
+                        <h1 class="display-4">Score</h1>   
+                        <div class="score">
+                            <ul class="list-group" id="game-score"></ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -43,7 +48,6 @@
         import renderScreen from "./js/renderscreen.js"
 
         const screen = document.getElementById("screen");
-        const scoreCanvas = document.getElementById("score");        
 
         const game = createGame(); 
         const keyDownListener = createKeyDownListener();
@@ -52,7 +56,7 @@
         
         socket.on('connect', () => {
             const playerId = socket.id;
-            renderScreen(screen, score, game, requestAnimationFrame, playerId);
+            renderScreen(screen, game, requestAnimationFrame, playerId);
             console.log("My player Id: " + playerId);
         });        
         
