@@ -106,7 +106,9 @@ export default function createGame() {
     }
 
     function addFruit(command) {
-        /* Gera uma string aleatória para ser usada como propriedade para o objeto frutas */
+        if (Object.entries(state.players).length === 0) return
+
+        /* Gera uma string aleatória para ser usada como propriedade para o objeto frutas */     
         var newFruitName = function () {
             var length = 30;
             var result = '';

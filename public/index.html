@@ -54,8 +54,7 @@
             const playerId = socket.id;
             renderScreen(screen, score, game, requestAnimationFrame, playerId);
             console.log("My player Id: " + playerId);
-        });
-        
+        });        
         
         socket.on('setup', (state) => {
             const playerId = socket.id;

@@ -9,7 +9,6 @@ const sockets = socketio(server)
 
 const game = createGame()
 game.subscribe((command) =>{
-    console.log("Emmiting " + command.type)
     sockets.emit(command.type, command)
 })
 
