@@ -13,7 +13,6 @@ export default function createKeyDownListener(){
     }
 
     function notifyAll(command){
-        console.log("notifying "+state.observers.length+" observers");        
         for (const observerFunction of state.observers){
             observerFunction(command);
         }

@@ -7,13 +7,16 @@
     <title>Canvas</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <style>
+        html, body {
+            height: 100%;
+        }
         #screen {
             border:10px solid #CCC;
-            image-rendering: pixelated;
+            /* image-rendering: pixelated;
             image-rendering: crisp-edges;
-            image-rendering: -moz-crisp-edges;
-            width: 500px;
-            height: 500px;
+            image-rendering: -moz-crisp-edges; */
+            width: 100%;
+            height: 100%;             
         }
         #score {
             image-rendering: optimizeSpeed;
@@ -22,12 +25,13 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 
-<body style="background-color: rgb(231, 235, 217);">
-    <div class="container">
+<body style="background-color: rgb(217, 224, 235);">
+<canvas width="2000" height="2000" id="screen"></canvas>
+    <!-- <div class="container">
         <div class="row">
             <div class="col-sm">
-                <p><em>Game Board</em></p>
-                <canvas width="10" height="10" id="screen"></canvas>
+                <p><em>Use the arrow keys to move your character</em></p>
+                <p>Reach 20 points to win</p>
             </div>
             <div class="col-sm">
                 <div class="jumbotron jumbotron-fluid">
@@ -35,30 +39,34 @@
                         <h1 class="display-4">Score</h1>   
                         <div class="score">
                             <ul class="list-group" id="game-score"></ul>
-                        </div>
+                        </div>                        
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <script type="module">
         import createKeyDownListener from "./js/keydownlistener.js"
         import createGame from "./js/gamecreation.js"
         import renderScreen from "./js/renderscreen.js"
+        import gameSounds from "./js/gamesounds.js"
 
         const screen = document.getElementById("screen");
 
+        const gameSoundPlayer = gameSounds();                
         const game = createGame(); 
         const keyDownListener = createKeyDownListener();
+
+        /* Plays the game music */
+        //gameSoundPlayer.background();
         
         const socket = io();
-        
-        socket.on('connect', () => {
+
+        socket.on('connect', (nickname) => {
             const playerId = socket.id;
             renderScreen(screen, game, requestAnimationFrame, playerId);
-            console.log("My player Id: " + playerId);
-        });        
+        });
         
         socket.on('setup', (state) => {
             const playerId = socket.id;
@@ -70,17 +78,16 @@
             keyDownListener.subscribe((command) => {
                 socket.emit(command.type, command)
             });
-            console.log(state);
         });
 
-        socket.on('add-player', (command) => {
+        socket.on('add-player', (command) => {            
             game.addPlayer(command);
-            console.log("adding another player " + command.playerId);
+            gameSoundPlayer.PlayerIn();
         });
 
         socket.on('remove-player', (command) => {
             game.removePlayer(command);
-            console.log("removing another player " + command.playerId);
+            gameSoundPlayer.PlayerOut();
         });
 
         socket.on('move-player', (command) => {
@@ -92,8 +99,20 @@
 
         socket.on('add-fruit', (command) => {
             game.addFruit(command);
+            gameSoundPlayer.kick();
+        });
+
+        socket.on('remove-fruit', (command) => {
+            game.removeFruit(command);
+            gameSoundPlayer.coinSound();            
         })
-        
+
+        socket.on('got-winner', (command) => {
+            if (command.player.playerId === socket.id)
+                gameSoundPlayer.courseClear();
+            else
+                gameSoundPlayer.gameOver();
+        })
     </script>
 </body>
 
