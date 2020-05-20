@@ -39,8 +39,9 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
     );
 
     /*Iteração nos jogadores*/
-    playersList.forEach(playerIdx => {
-        let player = game.state.players[playerIdx];
+    //game.state.players.forEach(playerIdx => {
+    for (const playerId in game.state.players) {
+        let player = game.state.players[playerId];
         cnvCtx.fillStyle = getPlayerColor(player.playerId);
         cnvCtx.fillRect(player.x, player.y, player.w, player.h);
 
@@ -49,7 +50,7 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         cnvCtx.textAlign = "center";
         cnvCtx.fillText(player.score, player.x + Math.round(player.w/2), player.y + Math.round(player.h/2));
         //printScoreElement(player, list);
-    });
+    };
 
     /*Iteração nas frutas*/
     for (const fruitId in game.state.fruits) {

@@ -12,8 +12,8 @@ export default function createGame() {
             width: Math.round(screenBase*0.04),
             height: Math.round(screenBase*0.04)
         },
-        maxPoints: 100,
-        fruitsInterval: 50,
+        maxPoints: 200,
+        fruitsInterval: 1000,
         anyWinner: false
     };
 
@@ -45,7 +45,8 @@ export default function createGame() {
             y: command.y,
             w: state.objects.width,
             h: state.objects.height,
-            score: command.score
+            score: command.score,
+            nickname: command.nickname
         }
 
         notifyAll({
@@ -55,7 +56,8 @@ export default function createGame() {
             y: command.y,
             w: state.objects.width,
             h: state.objects.height,
-            score: command.score
+            score: command.score,
+            nickname: command.nickname
         })
     }
 
@@ -117,24 +119,38 @@ export default function createGame() {
     }
 
     function detectColision(playerId) {
+        let player = state.players[playerId]
+        var xp = [];
+        var yp = [];
+        for (var i = player.x; i <= player.x + player.w; i++)
+            xp.push(i)
+        for (var j = player.y; j <= player.y + player.h; j++)
+            yp.push(j)
+            
         for (const fruitId in state.fruits) {
             let fruit = state.fruits[fruitId]
-            let player = state.players[playerId]
-            // if (player.x == fruit.x && player.y == fruit.y) {
-            if (((fruit.x >= player.x && fruit.x <= player.x + player.w) &&
-                 (fruit.y >= player.y && fruit.y <= player.y + player.h)) || 
-                ((player.x >= fruit.x && player.x <= fruit.x + fruit.w) &&
-                 (player.y >= fruit.y && player.y <= fruit.y + fruit.h)))  
-            {
-                increaseScore(player);                        
-                removeFruit({
-                    fruitId : fruit.fruitId
-                });
-                if (state.anyWinner) {
-                    for (const pfruitId in state.fruits){
-                        removeFruit({fruitId: state.fruits[pfruitId].fruitId})
-                    }
-                }
+            var xf = [];
+            var yf = [];
+            for (var i = fruit.x; i <= fruit.x + fruit.w; i++)
+                xf.push(i)
+            for (var j = fruit.y; j <= fruit.y + fruit.h; j++)
+                yf.push(j)
+            
+            if ((xp.filter(value => xf.includes(value)).length > 0) 
+            &&  (yp.filter(value => yf.includes(value)).length > 0)) {
+                collisionActions(fruit, player);
+            }
+        }
+    }
+    
+    function collisionActions(fruit, player) {
+        increaseScore(player);                        
+        removeFruit({
+            fruitId : fruit.fruitId
+        });
+        if (state.anyWinner) {
+            for (const pfruitId in state.fruits){
+                removeFruit({fruitId: state.fruits[pfruitId].fruitId})
             }
         }
     }

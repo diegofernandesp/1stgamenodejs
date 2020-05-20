@@ -16,9 +16,11 @@ game.start()
 
 sockets.on('connection', (socket) => {
     const playerId = socket.id
-    console.log('Player connected: ' + playerId)        
+    const nickname = socket.handshake.query.nickname
 
-    game.addPlayer({playerId: playerId, x: 0, y: 0, score: 0})
+    console.log('Player connected: ' + playerId + ' ' + nickname)        
+
+    game.addPlayer({playerId: playerId, x: 0, y: 0, score: 0, nickname: nickname})
 
     console.log(Object.entries(game.state.players).length + ' players connected')
 
