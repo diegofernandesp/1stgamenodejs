@@ -10,27 +10,12 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         return pplayerId == playerId ? myPlayerColor : AnotherPlayersColor;
     }
     
-    const printScoreElement = (player, list) => {                                    
-
-        var item = document.createElement("li");
-        item.setAttribute("class", "list-group-item d-flex justify-content-between align-items-center");        
-        list.appendChild(item);
-
-        var playerName = document.createElement("small");
-        playerName.setAttribute("style", "color: "+getPlayerColor(player.playerId));
-        playerName.appendChild(document.createTextNode(player.playerId));
-        item.appendChild(playerName);
-        
-        var score = document.createElement("span");
-        score.setAttribute("class", "badge badge-primary badge-pill");
-        score.appendChild(document.createTextNode(player.score));
-        item.append(score);
+    const printScoreElement = (player) => {                                    
+        cnvCtx.fillStyle = getPlayerColor(player.playerId)
+        cnvCtx.font = "25px Roboto";
+        cnvCtx.textAlign = "right";
+        cnvCtx.fillText(player.nickname + " ("+player.score+")", pscreen.width-30, playerScoreHeight += 50);
     };  
-
-    //const list = document.getElementById("game-score");
-    //while (list.firstChild) {
-    //    list.removeChild(list.firstChild);
-    //}
 
     /* Tentativa de ordenação por score */ 
     var playersList = game.state.players;
@@ -39,7 +24,7 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
     );
 
     /*Iteração nos jogadores*/
-    //game.state.players.forEach(playerIdx => {
+    var playerScoreHeight = 50;    
     for (const playerId in game.state.players) {
         let player = game.state.players[playerId];
         cnvCtx.fillStyle = getPlayerColor(player.playerId);
@@ -48,8 +33,8 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         cnvCtx.fillStyle = "White"
         cnvCtx.font = "30px Comic Sans MS"
         cnvCtx.textAlign = "center";
-        cnvCtx.fillText(player.score, player.x + Math.round(player.w/2), player.y + Math.round(player.h/2));
-        //printScoreElement(player, list);
+        cnvCtx.fillText(player.score, player.x + Math.round(player.w/2), player.y + Math.round(player.h/2)+7);
+        printScoreElement(player);
     };
 
     /*Iteração nas frutas*/
@@ -59,7 +44,12 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         cnvCtx.fillRect(fruit.x, fruit.y, fruit.w, fruit.h);
     };    
 
-    
+    if (game.state.anyWinner){
+        cnvCtx.fillStyle = "Black"
+        cnvCtx.font = "80px Roboto"
+        cnvCtx.textAlign = "center";
+        cnvCtx.fillText(game.state.winner.nickname + " Wins", pscreen.width/2, pscreen.height / 2);
+    }
 
     requestAnimationFrame(() => {
         renderScreen(pscreen, game, requestAnimationFrame, pplayerId)

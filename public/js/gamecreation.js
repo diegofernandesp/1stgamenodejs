@@ -89,7 +89,7 @@ export default function createGame() {
         },
         n: function (e) {
             state.fruits = {};
-            state.anyWinner = false;
+            state.anyWinner = false;            
             for (const playerId in state.players) {
                 const player = state.players[playerId];
                 player.score = 0;
@@ -111,6 +111,7 @@ export default function createGame() {
         player.score++;
         if (player.score === state.maxPoints) {        
             state.anyWinner = true
+            state.winner = player
             notifyAll({
                 type: "got-winner",
                 player: player

@@ -100,7 +100,6 @@
             socket.on('add-player', (command) => {            
                 game.addPlayer(command);
                 gameSoundPlayer.PlayerIn();
-                console.log(command);
             });
 
             socket.on('remove-player', (command) => {
