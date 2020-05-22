@@ -1,6 +1,6 @@
 export default function renderScreen(pscreen, game, requestAnimationFrame, pplayerId, imageVector) {
-    const myPlayerColor = "#00b159";
-    const AnotherPlayersColor = "#ffc425"
+    const myPlayerColor = "#ffc425";
+    const AnotherPlayersColor = "#7b7b7b"
     
     var cnvCtx = pscreen.getContext("2d");
     cnvCtx.clearRect(0, 0, pscreen.width, pscreen.height);
@@ -13,24 +13,28 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         cnvCtx.fillStyle = getPlayerColor(player.playerId)
         cnvCtx.font = "25px Roboto";
         cnvCtx.textAlign = "right";
-        cnvCtx.fillText(player.nickname + " ("+player.score+")", pscreen.width-30, playerScoreHeight += 50);
+        cnvCtx.fillText(player.nickname + " ("+player.score+")", pscreen.width-30, playerScoreHeight += 30);
     };  
 
     /* Tentativa de ordenação por score */ 
-    var playersList = game.state.players;
-    playersList = Object.keys(playersList).sort( (a,b) => 
-        playersList[a].score - playersList[b].score   
-    );
+    var playersList = []
+    for (var playerId in game.state.players){
+        const player = game.state.players[playerId]
+        playersList.push([player.nickname, player.score])
+    }
+    playersList.sort(function(a, b) {
+        return a[1] - b[1];
+    });
 
     function drawPlayer(player) {
         const me = {
-            x: new Date().getSeconds() % 2 == 0 ? 1220 : 2200,
-            y: 420
+            x: 852,
+            y: new Date().getSeconds() % 2 == 0 ? 2 : 52
         }
         
         const another = {
-            x: 342,
-            y: new Date().getSeconds() % 2 == 0 ? 1420 : 420
+            x: 904,
+            y: new Date().getSeconds() % 2 == 0 ? 52 : 2
         }
 
         const playerToDraw = player.playerId == pplayerId ? me : another;
@@ -38,8 +42,8 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         cnvCtx.drawImage(imageVector, 
             playerToDraw.x, /* Início da Imagem eixo X*/ 
             playerToDraw.y, /* Início da Imagem eixo Y*/ 
-            700, /* Largura Recorte - Eixo X */
-            700, /* Altura Recorte- Eixo Y */
+            44, /* Largura Recorte - Eixo X */
+            44, /* Altura Recorte- Eixo Y */
             player.x, /* Posição X */
             player.y, /* Posição Y */
             player.w, /* Largura Objeto */
@@ -51,14 +55,14 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         
         /* Coordenadas do Morango */
         const strawberry = {
-            x: 3042,
-            y: 420
+            x: 604,
+            y: 54
         }
 
         /* Coordenadas da Cereja */
         const cherry = {
-            x: 3980,
-            y: 420
+            x: 604,
+            y: 5
         }
 
         const fruitToDraw = fruit.kind == 1 ? strawberry : cherry;
@@ -66,8 +70,8 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         cnvCtx.drawImage(imageVector, 
             fruitToDraw.x, /* Início da Imagem eixo X*/ 
             fruitToDraw.y, /* Início da Imagem eixo Y*/ 
-            700, /* Largura Recorte - Eixo X */
-            700, /* Altura Recorte- Eixo Y */
+            44, /* Largura Recorte - Eixo X */
+            44, /* Altura Recorte- Eixo Y */
             fruit.x, /* Posição X */
             fruit.y, /* Posição Y */
             fruit.w, /*Largura Objeto */
@@ -76,7 +80,7 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
     }
 
     /*Iteração nos jogadores*/
-    var playerScoreHeight = 25;    
+    var playerScoreHeight = 15;    
     for (const playerId in game.state.players) {
         let player = game.state.players[playerId];
         cnvCtx.fillStyle = getPlayerColor(player.playerId);
@@ -94,7 +98,7 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         cnvCtx.fillStyle = "White"
         cnvCtx.font = "80px Roboto"
         cnvCtx.textAlign = "center";
-        cnvCtx.fillText(game.state.winner.nickname + " Wins", pscreen.width/2, pscreen.height / 2);
+        cnvCtx.fillText(game.state.winner.nickname + " Wins", pscreen.width/2, pscreen.height/2);
     }
 
     requestAnimationFrame(() => {
