@@ -14,7 +14,8 @@
             height: 100%;
         }
         #screen {
-            border:10px solid #CCC;
+            border:1px solid #CCC;
+            background-color: black;
             /* image-rendering: pixelated;
             image-rendering: crisp-edges;
             image-rendering: -moz-crisp-edges; */
@@ -24,12 +25,15 @@
         #score {
             image-rendering: optimizeSpeed;
         }
+        #images {
+            visibility: hidden;
+        }
     </style>
     <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body style="background-color: rgb(217, 224, 235);">
-    <canvas width="2000" height="2000" id="screen"></canvas>
+    <canvas width="1" height="1" id="screen"></canvas>
  
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -64,12 +68,16 @@
         $('#exampleModal').modal();
 
         $('#btnStartGame').click(function(){
-
-            const screen = document.getElementById("screen");
-
             const gameSoundPlayer = gameSounds();                
             const game = createGame(); 
             const keyDownListener = createKeyDownListener();
+            
+            const screen = document.getElementById("screen");
+            screen.setAttribute("width", game.state.screen.width);
+            screen.setAttribute("height", game.state.screen.height);
+
+            const imageVector = document.createElement("IMG");
+            imageVector.setAttribute("src", "image/pngwing.com.png");
 
             /* Plays the game music */
             //gameSoundPlayer.background();
@@ -82,7 +90,7 @@
 
             socket.on('connect', () => {
                 const playerId = socket.id;
-                renderScreen(screen, game, requestAnimationFrame, playerId);
+                renderScreen(screen, game, requestAnimationFrame, playerId, imageVector);
             });
             
             socket.on('setup', (state) => {

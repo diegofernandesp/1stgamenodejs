@@ -1,19 +1,22 @@
 export default function createGame() {
-    const screenBase = 2000;
+    const screenBase = {
+        x: 1920,
+        y: 1080
+    };
 
     const state = {
         fruits: {},
         players: {},
         screen: {
-            width: screenBase,
-            height: screenBase
+            width: screenBase.x,
+            height: screenBase.y
         },
         objects: {
-            width: Math.round(screenBase*0.04),
-            height: Math.round(screenBase*0.04)
+            width: Math.round(screenBase.x/40),
+            height: Math.round(screenBase.y/30)
         },
-        maxPoints: 200,
-        fruitsInterval: 1000,
+        maxPoints: 20,
+        fruitsInterval: 1800,
         anyWinner: false
     };
 
@@ -75,7 +78,7 @@ export default function createGame() {
             if (e.y > 0)
                 e.y -= state.objects.height;
         },
-        ArrowDown: function (e) {
+        ArrowDown: function (e) {            
             if (e.y < state.screen.height - state.objects.height)
                 e.y += state.objects.height;
         },
@@ -94,7 +97,11 @@ export default function createGame() {
                 const player = state.players[playerId];
                 player.score = 0;
             }
+        },
+        s: function () {
+            console.log(state);
         }
+
     };        
 
     function movePlayer(command) {
@@ -174,6 +181,7 @@ export default function createGame() {
     
         var newFruit = {
             fruitId: fruitId,
+            kind: Math.round(Math.random()*1),
             x: command ? command.x : Math.floor(Math.random() * state.screen.width),
             y: command ? command.y : Math.floor(Math.random() * state.screen.height),
             w: state.objects.width,
@@ -183,6 +191,7 @@ export default function createGame() {
 
         notifyAll({
             type: "add-fruit",
+            king: newFruit.kind,
             fruitId: fruitId,
             x: newFruit.x,
             y: newFruit.y,
