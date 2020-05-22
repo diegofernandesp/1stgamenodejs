@@ -27,14 +27,24 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
     });
 
     function drawPlayer(player) {
+
+        const spriteMovIdx = new Date().getSeconds();
+
+        var movements = {
+            ArrowRight: [0,50,100],
+            ArrowDown: [150,200,250],
+            ArrowLeft: [300,350,400],
+            ArrowUp: [450,500,550]
+        }
+
         const me = {
-            x: 852,
-            y: new Date().getSeconds() % 2 == 0 ? 2 : 52
+            x: 850,
+            y: movements[player.lastMovement][spriteMovIdx % 3]
         }
         
         const another = {
-            x: 904,
-            y: new Date().getSeconds() % 2 == 0 ? 52 : 2
+            x: 900,
+            y: new Date().getSeconds() % 2 == 0 ? 50 : 0
         }
 
         const playerToDraw = player.playerId == pplayerId ? me : another;

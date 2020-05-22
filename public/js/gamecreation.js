@@ -16,7 +16,7 @@ export default function createGame() {
             height: Math.round(screenBase.y/18)
         },
         maxPoints: 20,
-        fruitsInterval: 1200,
+        fruitsInterval: 1500,
         anyWinner: false
     };
 
@@ -49,7 +49,8 @@ export default function createGame() {
             w: state.objects.width,
             h: state.objects.height,
             score: command.score,
-            nickname: command.nickname
+            nickname: command.nickname,
+            lastMovement: "ArrowRight"
         }
 
         notifyAll({
@@ -105,9 +106,10 @@ export default function createGame() {
     };        
 
     function movePlayer(command) {
-        notifyAll(command);
         const moveFunction = handleMovement[command.keyPressed];
         const player = state.players[command.playerId];
+        player.lastMovement = command.keyPressed;
+        notifyAll(command);
         if (moveFunction){
             moveFunction(player)
             detectColision(command.playerId);
@@ -153,7 +155,8 @@ export default function createGame() {
     
     function collisionActions(fruit, player) {
         removeFruit({
-            fruitId : fruit.fruitId
+            fruitId : fruit.fruitId,
+            player: player
         });
         increaseScore(player);                                
         if (state.anyWinner) {
@@ -167,7 +170,8 @@ export default function createGame() {
         delete state.fruits[command.fruitId];      
         notifyAll({
             type: 'remove-fruit',
-            fruitId: command.fruitId
+            fruitId: command.fruitId,
+            player: command.player
         })
     }
 
@@ -178,12 +182,18 @@ export default function createGame() {
         }
 
         const fruitId = Math.floor(Math.random() * 9999999999999);
+
+        var randomX = Math.random() * state.screen.width;
+        randomX = randomX - (randomX % state.objects.width);
+
+        var randomY = Math.random() * state.screen.height;
+        randomY = randomY - (randomY % state.objects.height);
     
         var newFruit = {
             fruitId: fruitId,
             kind: Math.round(Math.random()*1),
-            x: command ? command.x : Math.floor(Math.random() * state.screen.width),
-            y: command ? command.y : Math.floor(Math.random() * state.screen.height),
+            x: command ? command.x : randomX,
+            y: command ? command.y : randomY,
             w: state.objects.width,
             h: state.objects.height,
         };
