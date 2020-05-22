@@ -12,11 +12,11 @@ export default function createGame() {
             height: screenBase.y
         },
         objects: {
-            width: Math.round(screenBase.x/40),
-            height: Math.round(screenBase.y/30)
+            width: Math.round(screenBase.x/32),
+            height: Math.round(screenBase.y/18)
         },
         maxPoints: 20,
-        fruitsInterval: 1800,
+        fruitsInterval: 1200,
         anyWinner: false
     };
 
@@ -152,10 +152,10 @@ export default function createGame() {
     }
     
     function collisionActions(fruit, player) {
-        increaseScore(player);                        
         removeFruit({
             fruitId : fruit.fruitId
         });
+        increaseScore(player);                                
         if (state.anyWinner) {
             for (const pfruitId in state.fruits){
                 removeFruit({fruitId: state.fruits[pfruitId].fruitId})
