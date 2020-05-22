@@ -128,13 +128,11 @@
             });
 
             socket.on('remove-fruit', (command) => {
-                console.log(command);
                 game.removeFruit(command);
                 gameSoundPlayer.coinSound();            
             });
 
             socket.on('got-winner', (command) => {
-                //game.state.fruits = {};
                 if (command.player.playerId === socket.id)
                     gameSoundPlayer.courseClear();
                 else
