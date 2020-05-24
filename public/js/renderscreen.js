@@ -44,7 +44,7 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         
         const another = {
             x: 900,
-            y: new Date().getSeconds() % 2 == 0 ? 50 : 0
+            y: movements[player.lastMovement][spriteMovIdx % 3]
         }
 
         const playerToDraw = player.playerId == pplayerId ? me : another;
@@ -63,19 +63,11 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
 
     function drawFruit(fruit) {
         
-        /* Coordenadas do Morango */
-        const strawberry = {
+        /* Coordenadas da Fruta */
+        const fruitToDraw = {
             x: 604,
-            y: 54
+            y: fruit.kind * 50 + 4
         }
-
-        /* Coordenadas da Cereja */
-        const cherry = {
-            x: 604,
-            y: 5
-        }
-
-        const fruitToDraw = fruit.kind == 1 ? strawberry : cherry;
 
         cnvCtx.drawImage(imageVector, 
             fruitToDraw.x, /* Início da Imagem eixo X*/ 
@@ -89,6 +81,12 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         );
     }
 
+    /*Iteração nas frutas*/
+    for (const fruitId in game.state.fruits) {
+        let fruit = game.state.fruits[fruitId];
+        drawFruit(fruit);
+    };
+        
     /*Iteração nos jogadores*/
     var playerScoreHeight = 15;    
     for (const playerId in game.state.players) {
@@ -97,12 +95,6 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         drawPlayer(player);
         printScoreElement(player);
     };
-
-    /*Iteração nas frutas*/
-    for (const fruitId in game.state.fruits) {
-        let fruit = game.state.fruits[fruitId];
-        drawFruit(fruit);
-    };    
 
     if (game.state.anyWinner){
         cnvCtx.fillStyle = "White"

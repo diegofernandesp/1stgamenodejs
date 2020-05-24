@@ -41,7 +41,7 @@ sockets.on('connection', (socket) => {
 
 app.use(express.static('public'))
 
-const port = 3001
+const port = 3000;
 server.listen(port, () => {
     console.log("Server Listening on port " + port)
 })

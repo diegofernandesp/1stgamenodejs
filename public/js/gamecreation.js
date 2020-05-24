@@ -15,8 +15,8 @@ export default function createGame() {
             width: Math.round(screenBase.x/32),
             height: Math.round(screenBase.y/18)
         },
-        maxPoints: 20,
-        fruitsInterval: 1500,
+        maxPoints: 100,
+        fruitsInterval: 500,
         anyWinner: false
     };
 
@@ -76,18 +76,22 @@ export default function createGame() {
 
     var handleMovement = {        
         ArrowUp: function (e) {
+            e.lastMovement = "ArrowUp";
             if (e.y > 0)
                 e.y -= state.objects.height;
         },
         ArrowDown: function (e) {            
+            e.lastMovement = "ArrowDown";
             if (e.y < state.screen.height - state.objects.height)
                 e.y += state.objects.height;
         },
         ArrowLeft: function (e) {
+            e.lastMovement = "ArrowLeft";
             if (e.x > 0)
                 e.x -= state.objects.width;
         },
         ArrowRight: function (e) {
+            e.lastMovement = "ArrowRight";
             if (e.x < state.screen.width - state.objects.width)
                 e.x += state.objects.width;
         },
@@ -101,14 +105,14 @@ export default function createGame() {
         },
         s: function () {
             console.log(state);
+            console.log(Object.entries(state.fruits).length);
         }
 
     };        
 
     function movePlayer(command) {
         const moveFunction = handleMovement[command.keyPressed];
-        const player = state.players[command.playerId];
-        player.lastMovement = command.keyPressed;
+        const player = state.players[command.playerId];        
         notifyAll(command);
         if (moveFunction){
             moveFunction(player)
@@ -121,6 +125,7 @@ export default function createGame() {
         if (player.score === state.maxPoints) {        
             state.anyWinner = true
             state.winner = player
+            state.fruits = {}
             notifyAll({
                 type: "got-winner",
                 player: player
@@ -130,25 +135,11 @@ export default function createGame() {
 
     function detectColision(playerId) {
         let player = state.players[playerId]
-        var xp = [];
-        var yp = [];
-        for (var i = player.x; i <= player.x + player.w; i++)
-            xp.push(i)
-        for (var j = player.y; j <= player.y + player.h; j++)
-            yp.push(j)
-            
         for (const fruitId in state.fruits) {
             let fruit = state.fruits[fruitId]
-            var xf = [];
-            var yf = [];
-            for (var i = fruit.x; i <= fruit.x + fruit.w; i++)
-                xf.push(i)
-            for (var j = fruit.y; j <= fruit.y + fruit.h; j++)
-                yf.push(j)
-            
-            if ((xp.filter(value => xf.includes(value)).length > 0) 
-            &&  (yp.filter(value => yf.includes(value)).length > 0)) {
-                collisionActions(fruit, player);
+            if (!fruit) break
+            if (fruit.x == player.x && fruit.y == player.y){
+                collisionActions(fruit, player);                            
             }
         }
     }
@@ -158,12 +149,7 @@ export default function createGame() {
             fruitId : fruit.fruitId,
             player: player
         });
-        increaseScore(player);                                
-        if (state.anyWinner) {
-            for (const pfruitId in state.fruits){
-                removeFruit({fruitId: state.fruits[pfruitId].fruitId})
-            }
-        }
+        increaseScore(player);                                                        
     }
     
     function removeFruit(command){        
@@ -174,35 +160,61 @@ export default function createGame() {
             player: command.player
         })
     }
-
+    
     function addFruit(command) {
         if (Object.entries(state.players).length === 0) return
+        
         if (state.anyWinner) {            
             return
         }
+                
+        const generateFruitData = function(fruitData){
+            const dummyX = Math.random() * state.screen.width;
+            const randomX = dummyX - (dummyX % state.objects.width);
+            
+            const dummyY = Math.random() * state.screen.height;
+            const randomY = dummyY - (dummyY % state.objects.height);
 
-        const fruitId = Math.floor(Math.random() * 9999999999999);
+            const newFruitId = Math.floor(Math.random() * 9999999999999);
+            const kind = Math.round(Math.random()*6);
 
-        var randomX = Math.random() * state.screen.width;
-        randomX = randomX - (randomX % state.objects.width);
+            for (var fruitId in state.fruits){
+                const fruit = state.fruits[fruitId]
+                if ((randomX == fruit.x && randomY == fruit.y) ||
+                    (fruit.fruitId == newFruitId)){
+                    return false;
+                }
+            }
+            
+            fruitData.x = randomX;
+            fruitData.y = randomY;
+            fruitData.fruitId = newFruitId;
+            fruitData.kind = kind;
 
-        var randomY = Math.random() * state.screen.height;
-        randomY = randomY - (randomY % state.objects.height);
-    
+            return true;
+        }
+        
+        if (!command){
+            var fruitData = {}
+            if (!generateFruitData(fruitData)) {
+                return
+            }
+        }
+        
         var newFruit = {
-            fruitId: fruitId,
-            kind: Math.round(Math.random()*1),
-            x: command ? command.x : randomX,
-            y: command ? command.y : randomY,
+            fruitId: command ? command.fruitId : fruitData.fruitId,
+            kind: command ? command.kind : fruitData.kind,
+            x: command ? command.x : fruitData.x,
+            y: command ? command.y : fruitData.y,
             w: state.objects.width,
             h: state.objects.height,
         };
-        state.fruits[fruitId] = newFruit;
+        state.fruits[newFruit.fruitId] = newFruit;
 
         notifyAll({
             type: "add-fruit",
-            king: newFruit.kind,
-            fruitId: fruitId,
+            kind: newFruit.kind,
+            fruitId: newFruit.fruitId,
             x: newFruit.x,
             y: newFruit.y,
             w: newFruit.w,
