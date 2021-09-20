@@ -1,53 +1,53 @@
 export default function gameSounds(){
+    var backgroundAudio = new Audio("../audio/background2.mp3")
+    var coinSoundAudio = new Audio("../audio/smw_coin.wav")
+    var eatFruitAudio = new Audio("../audio/smw_1-up.wav")
+    var PlayerInAudio = new Audio("../audio/smw_egg_hatching.wav")
+    var PlayerOutAudio = new Audio("../audio/smw_lemmy_wendy_falls_out_of_pipe.wav")
+    var movePlayerAudio = new Audio("../audio/smw_jump.wav");
+    var bubblePopAudio = new Audio("../audio/smw_bubble_pop.wav");
+    var courseClearAudio = new Audio("../audio/smw_course_clear.wav");
+    var gameOverAudio = new Audio("../audio/smw_game_over.wav");
+    var kickAudio = new Audio("../audio/smw_kick.wav");
 
     function background(){
-        var audio = new Audio("../audio/background2.mp3")
-        audio.play()
+        backgroundAudio.play()
     }
     
     function coinSound() {
-        var audio = new Audio("../audio/smw_coin.wav")
-        audio.play()
+        coinSoundAudio.play()
     }
 
     function eatFruit() {
-        var audio = new Audio("../audio/smw_1-up.wav")
-        audio.play()
+        eatFruitAudio.play()
     }
     
     function PlayerIn() {
-        var audio = new Audio("../audio/smw_egg_hatching.wav")
-        audio.play()
+        PlayerInAudio.play()
     }
     
     function PlayerOut() {
-        var audio = new Audio("../audio/smw_lemmy_wendy_falls_out_of_pipe.wav")
-        audio.play()
+        PlayerOutAudio.play()
     }
 
     function movePlayer() {
-        var audio = new Audio("../audio/smw_jump.wav");
-        audio.play()
+        movePlayerAudio.play()
     }
     
     function bubblePop() {
-        var audio = new Audio("../audio/smw_bubble_pop.wav");
-        audio.play()
+        bubblePopAudio.play()
     }
     
     function courseClear() {
-        var audio = new Audio("../audio/smw_course_clear.wav");
-        audio.play()
+        courseClearAudio.play()
     }
     
     function gameOver() {
-        var audio = new Audio("../audio/smw_game_over.wav");
-        audio.play()
+        gameOverAudio.play()
     }
     
     function kick() {
-        var audio = new Audio("../audio/smw_kick.wav");
-        audio.play()
+        kickAudio.play()
     }
 
     return {
