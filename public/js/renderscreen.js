@@ -65,8 +65,8 @@ export default function renderScreen(pscreen, game, requestAnimationFrame, pplay
         
         /* Coordenadas da Fruta */
         const fruitToDraw = {
-            x: 604,
-            y: fruit.kind * 50 + 4
+            x: fruit.kind > 6 ? 4 : 604,
+            y: fruit.kind > 6 ? 12*50 : fruit.kind * 50 + 4
         }
 
         cnvCtx.drawImage(imageVector, 

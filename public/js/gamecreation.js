@@ -15,8 +15,8 @@ export default function createGame() {
             width: Math.round(screenBase.x/32),
             height: Math.round(screenBase.y/18)
         },
-        maxPoints: 100,
-        fruitsInterval: 500,
+        maxPoints: 20,
+        fruitsInterval: 1200,
         anyWinner: false
     };
 
@@ -120,8 +120,11 @@ export default function createGame() {
         }        
     };
     
-    function increaseScore(player) {
-        player.score++;
+    function increaseScore(player, fruit) {
+        if (fruit.kind > 6)
+            player.score --
+        else 
+            player.score++
         if (player.score === state.maxPoints) {        
             state.anyWinner = true
             state.winner = player
@@ -149,7 +152,7 @@ export default function createGame() {
             fruitId : fruit.fruitId,
             player: player
         });
-        increaseScore(player);                                                        
+        increaseScore(player, fruit);                                                        
     }
     
     function removeFruit(command){        
@@ -176,7 +179,7 @@ export default function createGame() {
             const randomY = dummyY - (dummyY % state.objects.height);
 
             const newFruitId = Math.floor(Math.random() * 9999999999999);
-            const kind = Math.round(Math.random()*6);
+            const kind = Math.round(Math.random()*8);
 
             for (var fruitId in state.fruits){
                 const fruit = state.fruits[fruitId]
