@@ -1,11 +1,11 @@
 import express from 'express'
 import http from 'http'
 import createGame from './public/js/gamecreation.js'
-import socketio from 'socket.io'
+import {Server} from 'socket.io'
 
 const app = express()
 const server = http.createServer(app)
-const sockets = socketio(server)
+const sockets = new Server(server)
 
 const game = createGame()
 game.subscribe((command) =>{
